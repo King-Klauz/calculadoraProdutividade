@@ -1,0 +1,235 @@
+<script setup lang="ts">
+import { NInputNumber, NForm, NDivider, NButton } from 'naive-ui';
+import { ref } from 'vue';
+
+const paradigmas = ref<{ valor: number }[]>([]);
+const valor = 0;
+const requerentInput = ref<number>(0);
+const metaProdutividade = ref<string>('');
+
+function adicionarParadigma() {
+    paradigmas.value.push({ valor });
+    console.log(paradigmas.value)
+    console.log(requerentInput)
+}
+
+function removerParadigma() {
+    paradigmas.value.pop();
+    console.log(paradigmas.value)
+}
+
+function calcularMediaSimplesParadigmas() {
+    if (paradigmas.value.length === 0) {
+        return 0;
+    }
+
+    let soma = 0;
+    for (const paradigma of paradigmas.value) {
+        soma += paradigma.valor;
+    }
+
+    return (soma / paradigmas.value.length);
+}
+
+function produtividade30porcentoParadigma() {
+    let resultado = calcularMediaSimplesParadigmas();
+    return (resultado + (resultado * 0.30)).toFixed(0)
+}
+
+function produtividade30porcentoRequente() {
+    let resultado = requerentInput.value;
+    return (resultado + (resultado * 0.30)).toFixed(0)
+}
+
+function produtivadadeMeta() {
+  let r = parseFloat(produtividade30porcentoRequente());
+  let p = parseFloat(produtividade30porcentoParadigma());
+  console.log(r);
+  console.log(p);
+  if (r > p) {
+    metaProdutividade.value = "Sua meta de produtividade é: " + r;
+  } else {
+    metaProdutividade.value = "Sua meta de produtividade é: " + p;
+  }
+}
+
+</script>
+
+<template>
+  <div class="logotipo-conteiner">
+    <div class="background-img-container">
+      
+    </div>
+  </div>
+    <section class="background">
+        <div class="conteiner">
+            <div class="card">
+                <n-form class="calc-form">
+                    <div>
+                        <n-divider class="title-form" title-placement="center">
+                            REQUERENTE
+                        </n-divider>
+                        <label class="calc-form-requerente">Média de Produtividade do Requerente:</label>
+                        <n-input-number v-model:value="requerentInput" class="input-calc-form"
+                            label="Média de Produtividade do Requerente" :show-button="false" placeholder="Digite" />
+                    </div>
+                    <div class="result-30-requerent">
+                        Média de Produtividade + 30%: {{ produtividade30porcentoRequente() }}
+                    </div>
+
+                    <n-divider class="title-form" title-placement="center">
+                        PARADIGMAS
+                    </n-divider>
+                    <div class="conteiner-requerente">
+                        <div class="calc-col">
+                            <div>
+                                <div v-for="(paradigma, index) in paradigmas" :key="index">
+                                    <label class="calc-form-paradigma">Média de Produtividade do Paradigma {{ index + 1
+                                    }}:</label>
+                                    <n-input-number v-model:value="paradigma.valor"
+                                        @onUpdate:value="paradigma.valor = $event" class="input-calc-form"
+                                        label="Média de Produtividade do Paradigma" :show-button="false"
+                                        placeholder="Digite" />
+                                </div>
+                            </div>
+                            <div class="btn-paradigma">
+                                <n-button class="btn-add" @click="adicionarParadigma">Adicionar paradigma</n-button>
+                                <n-button class="btn-remove" @click="removerParadigma">Remover paradigma</n-button>
+                            </div>
+                        </div>
+
+                        <div class="resultado-media-col">
+                            Média Simples dos Paradigmas: {{ calcularMediaSimplesParadigmas() }} <br><br>
+                            Média de produtivadade dos Paradigmas + 30%: {{
+                                produtividade30porcentoParadigma() }}
+                        </div>
+                    </div>
+                </n-form>
+                <div class="btn-calc-form">
+                    <n-button @click="produtivadadeMeta">Calcular Meta de Produtividade</n-button>
+                </div>
+
+                <div class="meta-produtividade">
+                    {{ metaProdutividade }}
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<style scoped>
+.conteiner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background-img-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Colocando a imagem atrás do conteúdo */
+  background-image: url('../assets/PDV.svg');
+  background-size: auto 100%; 
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Estilo para a classe logotipo-conteiner */
+.logotipo-conteiner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.logotipo{
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+}
+
+.calc-form-requerente{
+  font-weight: bold;
+}
+
+.conteiner-requerente {
+  display: flex;
+}
+
+.card {
+    border: 5px solid rgb(0, 0, 55);
+    margin: 200px 50px 50px 50px;
+    width: 50%;
+    height: 800px;
+    border-radius: 5px;
+    padding: 25px;
+    border-radius: 25px;
+    height: 100%;
+    background-color: white;
+}
+
+.calc-form-paradigma{
+  font-weight: bold;
+}
+
+.calc-form {
+    justify-content: center;
+    align-items: center;
+}
+
+.calc-col {
+    width: 45%;
+}
+
+.resultado-media-col{
+    margin-left: 10%;
+    font-weight: bold;
+}
+
+.input-calc-form {
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-paradigma {
+    margin-top: 5px;
+}
+
+.btn-remove {
+    margin-left: 5px;
+}
+
+.btn-calc-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.resultado-media {
+    margin-top: 5px;
+    border-radius: 5px;
+    width: 500px;
+}
+
+.result-30-requerent {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.meta-produtividade{
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 20px;
+    font-weight: bold;
+}
+
+</style>
