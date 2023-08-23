@@ -4,8 +4,11 @@ import { ref } from 'vue';
 
 const paradigmas = ref<{ valor: number }[]>([]);
 const valor = 0;
+let valor_da_multiplicacao = 0.30;
 const requerentInput = ref<number>(0);
 const metaProdutividade = ref<string>('');
+const selectedButton = ref<string>('ordinario'); // Inicialmente, definimos como 'ordinario'
+
 
 function adicionarParadigma() {
     paradigmas.value.push({ valor });
@@ -33,51 +36,84 @@ function calcularMediaSimplesParadigmas() {
 
 function produtividade30porcentoParadigma() {
     let resultado = calcularMediaSimplesParadigmas();
-    return (resultado + (resultado * 0.30)).toFixed(0)
+    return (resultado + (resultado * valor_da_multiplicacao)).toFixed(0)
 }
 
 function produtividade30porcentoRequente() {
     let resultado = requerentInput.value;
-    return (resultado + (resultado * 0.30)).toFixed(0)
+    return (resultado + (resultado * valor_da_multiplicacao)).toFixed(0)
 }
+
 
 function produtivadadeMeta() {
-  let r = parseFloat(produtividade30porcentoRequente());
-  let p = parseFloat(produtividade30porcentoParadigma());
-  console.log(r);
-  console.log(p);
-  if (r > p) {
-    metaProdutividade.value = "Sua meta de produtividade é: " + r;
-  } else {
-    metaProdutividade.value = "Sua meta de produtividade é: " + p;
-  }
+    let r = parseFloat(produtividade30porcentoRequente());
+    let p = parseFloat(produtividade30porcentoParadigma());
+    console.log(r);
+    console.log(p);
+
+    if (r > p) {
+        metaProdutividade.value = "Sua meta de produtividade é: " + r;
+    } else {
+        metaProdutividade.value = "Sua meta de produtividade é: " + p;
+    }
 }
 
+var cor_ordinario = ".";
+var cor_especial = ".";
+
+function escolhaDoPedido(escolha: boolean) {
+    if (escolha) {
+        valor_da_multiplicacao = 0.30;
+        selectedButton.value = 'ordinario';
+        cor_ordinario = "blue"
+        cor_especial = ""
+    } else {
+        valor_da_multiplicacao = 0;
+        selectedButton.value = 'especial';
+        cor_ordinario = "."
+        cor_especial = "blue"
+    }
+}
+var text = []
+
+function texts(escolha: boolean) {
+    if (escolha) {
+        text = [" +30%:", "Média de produtivadade dos Paradigmas + 30% "]
+    } else {
+        text = []
+    }
+}
 </script>
 
 <template>
-  <div class="logotipo-conteiner">
-    <div class="background-img-container">
-      
+    <div class="logotipo-conteiner">
+        <div class="background-img-container">
+        </div>
     </div>
-  </div>
     <section class="background">
         <div class="conteiner">
             <div class="card">
                 <n-form class="calc-form">
+                    <div class="btn-ordinario-especial">
+                        <n-button class="btn-choice" id="ordinario" @click="escolhaDoPedido(true)"
+                            :class="{ 'selected-button': selectedButton === 'ordinario' }">Teletrabalho Ordinário</n-button>
+                        <n-button class="btn-choice" id="especial" @click="escolhaDoPedido(false)"
+                            :class="{ 'selected-button': selectedButton === 'especial' }">Teletrabalho Especial</n-button>
+                    </div>
                     <div>
                         <n-divider class="title-form" title-placement="center">
                             REQUERENTE
                         </n-divider>
                         <label class="calc-form-requerente">Média de Produtividade do Requerente:</label>
-                        <n-input-number v-model:value="requerentInput" class="input-calc-form"
-                            label="Média de Produtividade do Requerente" :show-button="false" placeholder="Digite" />
+                        <n-input-number v-model:value="requerentInput" @onUpdate:value="requerentInput = $event"
+                            class="input-calc-form" label="Média de Produtividade do Requerente" :show-button="false"
+                            placeholder="Digite" />
                     </div>
                     <div class="result-30-requerent">
-                        Média de Produtividade + 30%: {{ produtividade30porcentoRequente() }}
+                        Média de Produtividade: {{ produtividade30porcentoRequente() }}
                     </div>
 
-                    <n-divider class="title-form" title-placement="center">
+                    <n-divider class="title-form" title-placement="center" color="blue">
                         PARADIGMAS
                     </n-divider>
                     <div class="conteiner-requerente">
@@ -99,9 +135,7 @@ function produtivadadeMeta() {
                         </div>
 
                         <div class="resultado-media-col">
-                            Média Simples dos Paradigmas: {{ calcularMediaSimplesParadigmas() }} <br><br>
-                            Média de produtivadade dos Paradigmas + 30%: {{
-                                produtividade30porcentoParadigma() }}
+                            Média de produtivadade dos Paradigmas: {{produtividade30porcentoParadigma() }}
                         </div>
                     </div>
                 </n-form>
@@ -109,7 +143,7 @@ function produtivadadeMeta() {
                     <n-button @click="produtivadadeMeta">Calcular Meta de Produtividade</n-button>
                 </div>
 
-                <div class="meta-produtividade">
+                <div class="meta-produtividade" @onUpdate:value="metaProdutividade = $event">
                     {{ metaProdutividade }}
                 </div>
             </div>
@@ -124,28 +158,45 @@ function produtivadadeMeta() {
     justify-content: center;
 }
 
+
 .background-img-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* Colocando a imagem atrás do conteúdo */
-  background-image: url('../assets/PDV.svg');
-  background-size: auto 100%; 
-  background-repeat: no-repeat;
-  background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 109%;
+    z-index: -1;
+    background-image: url('../assets/PDV.svg');
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+
+.title-form {
+    font-size: 20px;
+}
+
+.btn-ordinario-especial {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-choice {
+    margin: 3px;
+    font-size: 15px;
+}
+
 
 /* Estilo para a classe logotipo-conteiner */
 .logotipo-conteiner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
-.logotipo{
+.logotipo {
     margin-top: 25px;
     display: flex;
     align-items: center;
@@ -153,17 +204,17 @@ function produtivadadeMeta() {
     width: 400px;
 }
 
-.calc-form-requerente{
-  font-weight: bold;
+.calc-form-requerente {
+    font-weight: bold;
 }
 
 .conteiner-requerente {
-  display: flex;
+    display: flex;
 }
 
 .card {
     border: 5px solid rgb(0, 0, 55);
-    margin: 200px 50px 50px 50px;
+    margin: 150px 50px 50px 50px;
     width: 50%;
     height: 800px;
     border-radius: 5px;
@@ -173,8 +224,8 @@ function produtivadadeMeta() {
     background-color: white;
 }
 
-.calc-form-paradigma{
-  font-weight: bold;
+.calc-form-paradigma {
+    font-weight: bold;
 }
 
 .calc-form {
@@ -186,7 +237,7 @@ function produtivadadeMeta() {
     width: 45%;
 }
 
-.resultado-media-col{
+.resultado-media-col {
     margin-left: 10%;
     font-weight: bold;
 }
@@ -222,14 +273,13 @@ function produtivadadeMeta() {
     font-weight: bold;
 }
 
-.meta-produtividade{
+.meta-produtividade {
     margin-top: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     font-size: 20px;
     font-weight: bold;
 }
-
 </style>
