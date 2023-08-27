@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NInputNumber, NForm, NDivider, NButton } from 'naive-ui';
 import { ref } from 'vue';
+import Card from '../components/Card.vue'
 
 const paradigmas = ref<{ valor: number }[]>([]);
 const valor = 0;
@@ -86,92 +87,66 @@ function texts(escolha: boolean) {
 </script>
 
 <template>
-    <div class="logotipo-conteiner">
-        <div class="background-img-container">
-        </div>
-    </div>
-    <section class="background">
-        <div class="conteiner">
-            <div class="card">
-                <n-form class="calc-form">
-                    <div class="btn-ordinario-especial">
-                        <n-button class="btn-choice" id="ordinario" @click="escolhaDoPedido(true)"
-                            :class="{ 'selected-button': selectedButton === 'ordinario' }">Teletrabalho Ordinário</n-button>
-                        <n-button class="btn-choice" id="especial" @click="escolhaDoPedido(false)"
-                            :class="{ 'selected-button': selectedButton === 'especial' }">Teletrabalho Especial</n-button>
-                    </div>
-                    <div>
-                        <n-divider class="title-form" title-placement="center">
-                            REQUERENTE
-                        </n-divider>
-                        <label class="calc-form-requerente">Média de Produtividade do Requerente:</label>
-                        <n-input-number v-model:value="requerentInput" @onUpdate:value="requerentInput = $event"
-                            class="input-calc-form" label="Média de Produtividade do Requerente" :show-button="false"
-                            placeholder="Digite" />
-                    </div>
-                    <div class="result-30-requerent">
-                        Média de Produtividade: {{ produtividade30porcentoRequente() }}
-                    </div>
-
-                    <n-divider class="title-form" title-placement="center" color="blue">
-                        PARADIGMAS
+    <Card>
+        <template #form-content>
+            <n-form class="calc-form">
+                <div class="btn-ordinario-especial">
+                    <n-button class="btn-choice" id="ordinario" @click="escolhaDoPedido(true)"
+                        :class="{ 'selected-button': selectedButton === 'ordinario' }">Teletrabalho
+                        Ordinário</n-button>
+                    <n-button class="btn-choice" id="especial" @click="escolhaDoPedido(false)"
+                        :class="{ 'selected-button': selectedButton === 'especial' }">Teletrabalho
+                        Especial</n-button>
+                </div>
+                <div>
+                    <n-divider class="title-form" title-placement="center">
+                        REQUERENTE
                     </n-divider>
-                    <div class="conteiner-requerente">
-                        <div class="calc-col">
-                            <div>
-                                <div v-for="(paradigma, index) in paradigmas" :key="index">
-                                    <label class="calc-form-paradigma">Média de Produtividade do Paradigma {{ index + 1
-                                    }}:</label>
-                                    <n-input-number v-model:value="paradigma.valor"
-                                        @onUpdate:value="paradigma.valor = $event" class="input-calc-form"
-                                        label="Média de Produtividade do Paradigma" :show-button="false"
-                                        placeholder="Digite" />
-                                </div>
-                            </div>
-                            <div class="btn-paradigma">
-                                <n-button class="btn-add" @click="adicionarParadigma">Adicionar paradigma</n-button>
-                                <n-button class="btn-remove" @click="removerParadigma">Remover paradigma</n-button>
+                    <label class="calc-form-requerente">Média de Produtividade do Requerente:</label>
+                    <n-input-number v-model:value="requerentInput" @onUpdate:value="requerentInput = $event"
+                        class="input-calc-form" label="Média de Produtividade do Requerente" :show-button="false"
+                        placeholder="Digite" />
+                </div>
+                <div class="result-30-requerent">
+                    Média de Produtividade: {{ produtividade30porcentoRequente() }}
+                </div>
+
+                <n-divider class="title-form" title-placement="center" color="blue">
+                    PARADIGMAS
+                </n-divider>
+                <div class="conteiner-requerente">
+                    <div class="calc-col">
+                        <div>
+                            <div v-for="(paradigma, index) in paradigmas" :key="index">
+                                <label class="calc-form-paradigma">Média de Produtividade do Paradigma {{ index + 1
+                                }}:</label>
+                                <n-input-number v-model:value="paradigma.valor" @onUpdate:value="paradigma.valor = $event"
+                                    class="input-calc-form" label="Média de Produtividade do Paradigma" :show-button="false"
+                                    placeholder="Digite" />
                             </div>
                         </div>
-
-                        <div class="resultado-media-col">
-                            Média de produtivadade dos Paradigmas: {{produtividade30porcentoParadigma() }}
+                        <div class="btn-paradigma">
+                            <n-button class="btn-add" @click="adicionarParadigma">Adicionar paradigma</n-button>
+                            <n-button class="btn-remove" @click="removerParadigma">Remover paradigma</n-button>
                         </div>
                     </div>
-                </n-form>
-                <div class="btn-calc-form">
-                    <n-button @click="produtivadadeMeta">Calcular Meta de Produtividade</n-button>
-                </div>
 
-                <div class="meta-produtividade" @onUpdate:value="metaProdutividade = $event">
-                    {{ metaProdutividade }}
+                    <div class="resultado-media-col">
+                        Média de produtivadade dos Paradigmas: {{ produtividade30porcentoParadigma() }}
+                    </div>
                 </div>
+            </n-form>
+            <div class="btn-calc-form">
+                <n-button @click="produtivadadeMeta">Calcular Meta de Produtividade</n-button>
             </div>
-        </div>
-    </section>
+
+            <div class="meta-produtividade" @onUpdate:value="metaProdutividade = $event">
+                {{ metaProdutividade }}
+            </div>
+        </template>
+    </Card>
 </template>
-
 <style scoped>
-.conteiner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.background-img-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 109%;
-    z-index: -1;
-    background-image: url('../assets/PDV.svg');
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
 .title-form {
     font-size: 20px;
 }
@@ -187,41 +162,12 @@ function texts(escolha: boolean) {
     font-size: 15px;
 }
 
-
-/* Estilo para a classe logotipo-conteiner */
-.logotipo-conteiner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.logotipo {
-    margin-top: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 400px;
-}
-
 .calc-form-requerente {
     font-weight: bold;
 }
 
 .conteiner-requerente {
     display: flex;
-}
-
-.card {
-    border: 5px solid rgb(0, 0, 55);
-    margin: 150px 50px 50px 50px;
-    width: 50%;
-    height: 800px;
-    border-radius: 5px;
-    padding: 25px;
-    border-radius: 25px;
-    height: 100%;
-    background-color: white;
 }
 
 .calc-form-paradigma {
@@ -260,12 +206,6 @@ function texts(escolha: boolean) {
     display: flex;
     justify-content: center;
     margin-top: 30px;
-}
-
-.resultado-media {
-    margin-top: 5px;
-    border-radius: 5px;
-    width: 500px;
 }
 
 .result-30-requerent {
