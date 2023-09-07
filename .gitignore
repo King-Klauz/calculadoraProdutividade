@@ -26,7 +26,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-calculadora_de_produtividade/
 
 # Não ignorar a pasta calculadoraProdutividade/src/assets/
 !calculadoraProdutividade/src/assets/
