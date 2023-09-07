@@ -11,9 +11,13 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^39.0.1",
+    "@ckeditor/ckeditor5-vue": "^5.1.0",
+    "ngx-quill": "^22.0.0",
     "pdf-lib": "^1.17.1",
     "pinia": "^2.1.4",
     "vue": "^3.3.4",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {

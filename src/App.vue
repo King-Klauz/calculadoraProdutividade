@@ -1,18 +1,40 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import Background from './components/Background.vue';
+import { NConfigProvider, type GlobalThemeOverrides } from 'naive-ui'
+import { ref } from 'vue';
+
+const theme = ref('#3b8cff')
+
+const themeOverrides: GlobalThemeOverrides = {
+  common: {
+    primaryColor: theme.value,
+    primaryColorHover: theme.value,
+    primaryColorPressed: theme.value,
+    primaryColorSuppl: theme.value
+  },
+  Button: {
+    textColor: theme.value
+  }
+}
+
 </script>
 
 <template>
-  <Background>
-    <template #page-content>
-      <RouterView />
-    </template>
-  </Background>
+  <n-config-provider :theme-overrides="themeOverrides">
+    <Background>
+      <template class='container' #page-content>
+        <RouterView />
+      </template>
+    </Background>
+  </n-config-provider>
 </template>
 
 <style scoped>
+.container {
+  overflow: auto;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;

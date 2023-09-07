@@ -9,11 +9,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: calc
-    },
-    {
-      path: '/form',
-      name: 'form',
-      component: Form
     }
   ]
 })

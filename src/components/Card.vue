@@ -1,33 +1,21 @@
 <script setup lang="ts">
-import { NInputNumber, NForm, NDivider, NButton } from 'naive-ui';
 </script>
 
 <template>
-    <section class="background">
-        <div class="conteiner">
-            <div class="card">
-                <slot name="form-content"></slot>
-            </div>
-        </div>
-    </section>
+    <div class="card">
+        <slot name="form-content"></slot>
+    </div>
 </template>
 
-<style scoped>
-.conteiner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
+<style>
 .card {
-    border: 5px solid rgb(0, 0, 55);
-    margin: 150px 50px 50px 50px;
-    width: 50%;
-    height: 800px;
-    border-radius: 5px;
-    padding: 25px;
-    border-radius: 25px;
+    border: 2px solid rgb(27, 0, 147);
+    margin: 8% 5% 8% 5%;
+    width: 60%;
     height: 100%;
+    padding: 50px;
+    border-radius: 20px;
     background-color: white;
+    min-width: 390px;
 }
 </style>
