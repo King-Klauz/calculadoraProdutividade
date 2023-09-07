@@ -28,5 +28,5 @@ coverage
 *.sw?
 
 # Não ignorar a pasta calculadoraProdutividade/src/assets/
-!calculadoraProdutividade/src/assets/
+!calculadoraProdutividade/
 calculadora_de_produtividade/

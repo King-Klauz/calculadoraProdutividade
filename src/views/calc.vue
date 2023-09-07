@@ -203,8 +203,8 @@ function produtivadadeMeta() {
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
 
 async function modifyPdf() {
-    const pdfPath = new URL('src/assets/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf', import.meta.url).pathname;
-    const existingPdfBytes = await fetch(pdfPath).then(res => res.arrayBuffer());
+    const url = 'src/assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+    const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
     const pdfDoc = await PDFDocument.load(existingPdfBytes)
     const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
@@ -464,7 +464,7 @@ async function modifyPdf() {
             font: helveticaFont
         })
         auxY -= 26.5
-
+        
         if (i > 2) {
             j = i + 1
             let y = 750; // Coordenada Y para a primeira linha
@@ -483,12 +483,12 @@ async function modifyPdf() {
                     size: 12,
                     font: helveticaFont,
                 });
-
+               
             }
 
             //baixar a linha 
             y -= 26.5
-
+            
             // Desenho dos paradigmas
             for (j; j - paradigmas.value.length != 0; j++) {
                 newPage.drawText("Paradigma " + (j + 1), {
