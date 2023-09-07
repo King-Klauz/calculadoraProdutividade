@@ -29,3 +29,4 @@ coverage
 
 # Não ignorar a pasta calculadoraProdutividade/src/assets/
 !calculadoraProdutividade/src/assets/
+calculadora_de_produtividade/
