@@ -203,7 +203,7 @@ function produtivadadeMeta() {
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
 
 async function modifyPdf() {
-    const url = 'src\assets\docs\plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+    const url = 'src/assets/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
     const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
     const pdfDoc = await PDFDocument.load(existingPdfBytes)
