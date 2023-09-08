@@ -192,7 +192,6 @@ function produtivadadeMeta() {
     let r = parseFloat(produtividade30porcentoRequente());
     let p = parseFloat(produtividade30porcentoParadigma());
 
-
     if (r > p) {
         return r;
     } else {
@@ -201,9 +200,8 @@ function produtivadadeMeta() {
 }
 
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
-
 async function modifyPdf() {
-    const url = 'src/assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+    const url = '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
     const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
     const pdfDoc = await PDFDocument.load(existingPdfBytes)
@@ -216,7 +214,6 @@ async function modifyPdf() {
 
 
     // PONTO PRETA PARA ID OS DOCS FEITOS NA C-PRO
-
     pdfText = '.'
     firstPage.drawText(pdfText, {
         x: 55,
@@ -226,7 +223,6 @@ async function modifyPdf() {
     })
 
     // INICIAL OU RENOVAÇÃO
-
     pdfText = 'X'
     if (ordinario_especial.value.valor_da_multiplicacao == 0.30) {
         firstPage.drawText(pdfText, {
@@ -245,7 +241,6 @@ async function modifyPdf() {
     }
 
     // IDENTIFICAÇÃO DO(A) SERVIDOR(A):
-
     pdfText = nome.value;
     firstPage.drawText(pdfText, {
         x: 55,
