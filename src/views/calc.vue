@@ -3,6 +3,10 @@ import { NInput, NForm, NDivider, NButton, NSpace, NRadio, NRadioGroup, NFormIte
 import { ref, onMounted, watch } from 'vue';
 import Card from '../components/Card.vue'
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import plano_ordinario from '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+import plano_especial from '../assets/docs/plano_de_trabalho_teletrabalho_condicoes_especiais.pdf'
+import requerimento_ordinário from '../assets/docs/requerimento_teletrabalho_condicoes.pdf'
+import requerimento_especial from '../assets/docs/requerimento_teletrabalho_ordinario.pdf'
 
 const paradigmas = ref<{ nome: string, valor: number, matricular: number }[]>([]);
 const valor = 0;
@@ -15,14 +19,17 @@ const selectedButton = ref<string>('ordinario'); // Inicialmente, definimos como
 
 const ordinario_especial = ref({
     valor_da_multiplicacao: 0.30,
+    caminho_doc: plano_ordinario,
     ordinario_especial: [
         {
             value: 0.30,
-            label: 'Ordinário'
+            label: 'Ordinário',
+            caminho_doc: plano_ordinario    // usar como variável quando for escolher o tipo de teletrabalho
         },
         {
             value: 0,
-            label: 'Condições Especiais'
+            label: 'Condições Especiais',
+            caminho_doc: plano_especial     // usar como variável quando for escolher o tipo de teletrabalho
         }
     ]
 })
@@ -30,7 +37,7 @@ const ordinario_especial = ref({
 // OPCAO DE RENOVAÇAO OU PEDIDO INICIAL
 
 const inicial_renovacao = ref({
-    tipo: '',
+    tipo: 'inicial',
     inicial_renovacao: [
         {
             value: 'inicial',
@@ -199,21 +206,24 @@ function produtivadadeMeta() {
     }
 }
 
-import pdf from '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
 
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
 async function modifyPdf() {
-    const url = pdf
-    const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
-    const pdfDoc = await PDFDocument.load(existingPdfBytes)
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
-
-    const pages = pdfDoc.getPages()
-    const firstPage = pages[0]
-    const secondPage = pages[1]
-    const { width, height } = firstPage.getSize()
-
+    let url = '';
+    if(ordinario_especial.value.valor_da_multiplicacao == 0.30){
+        url = ordinario_especial.value.ordinario_especial[0].caminho_doc; // ordinario 
+    }else{
+        url = ordinario_especial.value.ordinario_especial[1].caminho_doc; // especial
+    }
+    
+    const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const secondPage = pages[1];
+    const { width, height } = firstPage.getSize();
 
     // PONTO PRETA PARA ID OS DOCS FEITOS NA C-PRO
     pdfText = '.'
@@ -226,7 +236,7 @@ async function modifyPdf() {
 
     // INICIAL OU RENOVAÇÃO
     pdfText = 'X'
-    if (ordinario_especial.value.valor_da_multiplicacao == 0.30) {
+    if (inicial_renovacao.value.tipo == 'inicial') {
         firstPage.drawText(pdfText, {
             x: 117,
             y: 688,
@@ -574,6 +584,7 @@ async function modifyPdf() {
 }
 
 async function onSavePdf() {
+    console.log(ordinario_especial.value.caminho_doc + ' valor=> ' + ordinario_especial.value.valor_da_multiplicacao)
     const modifiedPdfBytes = await modifyPdf();
 
     // Crie uma nova janela do navegador com o PDF modificado
@@ -800,7 +811,6 @@ async function onSavePdf() {
     gap: 40px;
     justify-content: space-around;
 }
-
 
 .produtividade {
     display: flex;
