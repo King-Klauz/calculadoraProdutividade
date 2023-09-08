@@ -199,9 +199,11 @@ function produtivadadeMeta() {
     }
 }
 
+import pdf from '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
 async function modifyPdf() {
-    const url = '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
+    const url = pdf
     const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
     const pdfDoc = await PDFDocument.load(existingPdfBytes)
