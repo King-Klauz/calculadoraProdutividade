@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { NInput, NForm, NDivider, NButton, NSpace, NRadio, NRadioGroup, NFormItem, NSelect, NInputGroup, NInputGroupLabel, NInputNumber } from 'naive-ui';
-import { ref, onMounted, watch } from 'vue';
+import {
+    NInput, NForm, NDivider, NButton, NSpace, NRadio, NRadioGroup, NFormItem, NSelect,
+    NInputNumber
+} from 'naive-ui';
+import { ref, watch } from 'vue';
 import Card from '../components/Card.vue'
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import plano_ordinario from '../assets/docs/plano_de_trabalho_teletrabalho_ordinario_inicial_e_renovacao.pdf'
 import plano_especial from '../assets/docs/plano_de_trabalho_teletrabalho_condicoes_especiais.pdf'
-import requerimento_ordinário from '../assets/docs/requerimento_teletrabalho_condicoes.pdf'
-import requerimento_especial from '../assets/docs/requerimento_teletrabalho_ordinario.pdf'
+import requerimento_ordinário from '../assets/docs/requerimento_teletrabalho_ordinario.pdf'
+import requerimento_especial from '../assets/docs/requerimento_teletrabalho_condicoes.pdf'
+import { isSlotEmpty } from 'naive-ui/es/_utils';
+//import relatorio_trimestral from '../assets/docs/relatorio_trimestral_de_produtividade.pdf'
 
 const paradigmas = ref<{ nome: string, valor: number, matricular: number }[]>([]);
 const valor = 0;
@@ -14,6 +19,7 @@ let valor_da_multiplicacao = 0.30;
 const requerentInput = ref<number>(0);
 const metaProdutividade = ref<string>('');
 const selectedButton = ref<string>('ordinario'); // Inicialmente, definimos como 'ordinario'
+
 
 // OPCAO DE PEDIDO ORDINARIO OU ESPECIAL (CARREGAR ARQUIVO DE MODIDIFACÇÃO BASEADO NO VALOR DE *valor_da_multiplicacao*)
 
@@ -54,9 +60,16 @@ const inicial_renovacao = ref({
 
 const nome = ref<string>('');
 const matricula = ref<string>('');
+
+const endereco = ref<string>('');
+const cep = ref<string>('');
+const email = ref<string>('');
+const telefone = ref<string>('');
+
 const cargo = ref<string>('');
 const cargoComissao = ref<string>('');
 const lotacao = ref<string>('');
+const orgao = ref<string>('');
 
 // IDENTIFICAÇÃO DO GESTOR(A) TITULAR DA UNIDADE
 
@@ -126,7 +139,6 @@ const diasParcial = ref({
 })
 
 // DESCRIÇÃO DAS ATIVIDADES A SEREM DESEMPENHADAS
-
 var textoFormatado = ref('');
 const descricao_atividades = ref<string>('')
 
@@ -205,6 +217,7 @@ function produtivadadeMeta() {
         return p;
     }
 }
+
 
 let pdfText: string = ''; // Inicializa pdfText como uma string vazia
 async function modifyPdf() {
@@ -530,20 +543,21 @@ async function modifyPdf() {
         pdfText = produtividade30porcentoRequente().toString()
         secondPage.drawText(pdfText, {
             x: 485,
-            y: 674,
+            y: 576,
             size: 13,
             font: helveticaFont
         })
 
         pdfText = produtividade30porcentoParadigma().toString()
         secondPage.drawText(pdfText, {
+
             x: 485,
-            y: 576,
+            y: 674,
             size: 13,
             font: helveticaFont
         })
 
-        pdfText = produtivadadeMeta().toString();
+        pdfText = produtivadadeMeta().toString() + '/12 = ' + (produtivadadeMeta() / 12).toFixed();
         secondPage.drawText(pdfText, {
             x: 360,
             y: 473.5,
@@ -883,7 +897,7 @@ async function modifyPdf() {
         pdfText = produtividade30porcentoRequente().toString()
         secondPage.drawText(pdfText, {
             x: 485,
-            y: 674,
+            y: 569,
             size: 13,
             font: helveticaFont
         })
@@ -891,15 +905,15 @@ async function modifyPdf() {
         pdfText = produtividade30porcentoParadigma().toString()
         secondPage.drawText(pdfText, {
             x: 485,
-            y: 569,
+            y: 674,
             size: 13,
             font: helveticaFont
         })
 
-        pdfText = produtivadadeMeta().toString();
+        pdfText = produtivadadeMeta().toString() + '/12 = ' + (produtivadadeMeta() / 12).toFixed();
         secondPage.drawText(pdfText, {
             x: 360,
-            y: 466.5, // 473.5 - 7
+            y: 466.5,
             size: 13,
             font: helveticaFont
         })
@@ -923,7 +937,7 @@ async function modifyPdf() {
         pdfText = disposicao.value;
         secondPage.drawText(pdfText, {
             x: 207,
-            y: 300, // 307 - 7
+            y: 300,
             size: 11,
             font: helveticaFont
         })
@@ -932,6 +946,7 @@ async function modifyPdf() {
         return pdfBytes;
     }
 }
+
 
 async function onSavePdf() {
     console.log(ordinario_especial.value.caminho_doc + ' valor=> ' + ordinario_especial.value.valor_da_multiplicacao)
@@ -950,6 +965,7 @@ async function onSavePdf() {
         alert('O bloqueio de pop-up pode estar impedindo a abertura da nova janela.');
     }
 }
+
 </script>
 
 <template>
@@ -995,7 +1011,7 @@ async function onSavePdf() {
             </n-form-item>
 
             <n-form-item class="tamanho" label="Lotação:">
-                <n-input v-model:value="lotacao" class="input-calc-form" label="LOTAÇÃO" placeholder="Digite a lotação" />
+                <n-input v-model:value="lotacao" class="input-calc-form" placeholder="Digite a lotação" />
             </n-form-item>
 
             <n-divider class="title-form" title-placement="center" style="--n-color: rgb(0, 0, 122)">
@@ -1132,13 +1148,18 @@ async function onSavePdf() {
                 </n-input>
             </n-form-item>
 
-            <n-button class="btn" @click="onSavePdf">Salvar PDF Modificado</n-button>
+            <n-button class="btn" @click="onSavePdf">Salvar PDF modificado</n-button>
 
         </template>
     </Card>
 </template>
 
 <style>
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+}
+
 .btn {
     float: right;
     color: white;

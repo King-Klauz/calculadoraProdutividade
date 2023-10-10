@@ -1,6 +1,7 @@
 <template>
     <div class="background-img">
     </div>
+
     <div class="conteiner">
         <slot name="page-content"></slot>
     </div>
